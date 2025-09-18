@@ -1,0 +1,21 @@
+data_path: "sensor_data_full.csv"
+output_path: "fused_features.csv"
+log_path: "logs/"
+
+paths:
+  models_output: "models/"             # where models will be saved
+  data_input: "sensor_data_full.csv"   # your input CSV
+  features_output: "fused_features.csv" # output CSV for features
+
+parameters:
+  preprocess: true
+  feature_selection: true
+
+image:
+  normalize: true           # whether to normalize image values
+  resize: [100, 100]        # target size if resizing
+  smoothing: false 
+  red_band_index: 30
+  blue_band_index: 10 
+  green_band_index: 20       # index of red band in hyperspectral image
+  nir_band_index: 70  

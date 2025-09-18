@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌾 AI-Powered Crop Monitoring & Pest Prediction</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <!-- Header Section -->
+    <header class="header">
+        <div class="container">
+            <h1 class="main-title">🌾 CropGuard AI</h1>
+            <p class="subtitle">Smarter Fields. Healthier Harvests.</p>
+            
+            
+            <!-- Data Mode Selector -->
+            <div class="mode-selector">
+                <label class="mode-option active">
+                    <input type="radio" name="dataMode" value="demo" checked>
+                    <span>Demo Mode</span>
+                </label>
+                <label class="mode-option">
+                    <input type="radio" name="dataMode" value="upload">
+                    <span>Upload Mode</span>
+                </label>
+            </div>
+            
+            <!-- Progress Indicator -->
+            <div class="progress-container">
+                <div class="progress-step active" data-step="1">
+                    <div class="step-number">1</div>
+                    <span>Upload Data</span>
+                </div>
+                <div class="progress-step" data-step="2">
+                    <div class="step-number">2</div>
+                    <span>Feature Extraction</span>
+                </div>
+                <div class="progress-step" data-step="3">
+                    <div class="step-number">3</div>
+                    <span>Alerts</span>
+                </div>
+                <div class="progress-step" data-step="4">
+                    <div class="step-number">4</div>
+                    <span>Auto-label</span>
+                </div>
+                <div class="progress-step" data-step="5">
+                    <div class="step-number">5</div>
+                    <span>Model Training</span>
+                </div>
+                <div class="progress-step" data-step="6">
+                    <div class="step-number">6</div>
+                    <span>Visual Overlays</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <div class="container">
+            <!-- Step 1: Data Upload -->
+            <section class="step-section" id="step-1">
+                <h2 class="step-title">Step 1: Upload Data</h2>
+                
+                <!-- Demo Mode Display -->
+                <div class="demo-mode-display" id="demo-mode-display">
+                    <div class="demo-banner">
+                        <h3>🎯 Demo Mode Active</h3>
+                        <p>Using synthetic hyperspectral and sensor data for demonstration purposes.</p>
+                    </div>
+                    
+                    <div class="upload-grid">
+                        <div class="upload-card">
+                            <div class="upload-icon">📁</div>
+                            <h3>HDR File</h3>
+                            <div class="file-status demo">📊 demo.hdr</div>
+                            <div class="file-info">Synthetic hyperspectral header</div>
+                        </div>
+                        <div class="upload-card">
+                            <div class="upload-icon">🖼️</div>
+                            <h3>IMG File</h3>
+                            <div class="file-status demo">📊 demo.img</div>
+                            <div class="file-info">Synthetic image data</div>
+                        </div>
+                        <div class="upload-card">
+                            <div class="upload-icon">📊</div>
+                            <h3>Sensor CSV</h3>
+                            <div class="file-status demo">📊 demo_sensors.csv</div>
+                            <div class="file-info">Synthetic environmental data</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Upload Mode Interface -->
+                <div class="upload-mode-display hidden" id="upload-mode-display">
+                    <div class="upload-interface">
+                        <div class="upload-grid">
+                            <div class="upload-card">
+                                <div class="upload-icon">📁</div>
+                                <h3>HDR File</h3>
+                                <input type="file" id="hdr-file-input" accept=".hdr" class="file-input">
+                                <label for="hdr-file-input" class="file-upload-label">Choose HDR File</label>
+                                <div class="file-status pending" id="hdr-status">No file selected</div>
+                                <div class="file-info">Hyperspectral header file</div>
+                            </div>
+                            <div class="upload-card">
+                                <div class="upload-icon">🖼️</div>
+                                <h3>IMG File</h3>
+                                <input type="file" id="img-file-input" accept=".img" class="file-input">
+                                <label for="img-file-input" class="file-upload-label">Choose IMG File</label>
+                                <div class="file-status pending" id="img-status">No file selected</div>
+                                <div class="file-info">Hyperspectral image data</div>
+                            </div>
+                            <div class="upload-card">
+                                <div class="upload-icon">📊</div>
+                                <h3>Sensor CSV</h3>
+                                <input type="file" id="csv-file-input" accept=".csv" class="file-input">
+                                <label for="csv-file-input" class="file-upload-label">Choose CSV File</label>
+                                <div class="file-status pending" id="csv-status">No file selected</div>
+                                <div class="file-info">Environmental sensors</div>
+                            </div>
+                        </div>
+                        
+                        <div class="process-controls">
+                            <button id="process-data-btn" class="btn btn--primary btn--lg" disabled>Process Data</button>
+                            <div class="processing-status" id="processing-status" style="display: none;">
+                                <div class="status-icon">⏳</div>
+                                <span>Processing uploaded files...</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="data-summary" id="data-summary">
+                    <div class="summary-card">
+                        <div class="card-icon">🌈</div>
+                        <h4>Hyperspectral Image</h4>
+                        <p>Shape: <span id="image-shape">--</span></p>
+                        <p><span id="band-count">--</span> spectral bands loaded</p>
+                        <div class="data-source-label">Based on <span id="image-data-source">Demo Data</span></div>
+                    </div>
+                    <div class="summary-card">
+                        <div class="card-icon">📈</div>
+                        <h4>Sensor Data</h4>
+                        <p><span id="sensor-rows">--</span> rows of environmental data</p>
+                        <p>Soil moisture, temperature, humidity, leaf wetness</p>
+                        <div class="data-source-label">Based on <span id="sensor-data-source">Demo Data</span></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Step 2: Feature Extraction -->
+            <section class="step-section" id="step-2">
+                <h2 class="step-title">Step 2: Feature Extraction & Preprocessing</h2>
+                <div class="data-source-header">
+                    <span class="source-indicator">📊 Values Based on <span id="features-data-source">Demo Data</span></span>
+                </div>
+                
+                <!-- Vegetation Index Maps -->
+                <div class="feature-maps-grid">
+                    <div class="feature-map-card">
+                        <h3>NDVI Map</h3>
+                        <div class="map-container">
+                            <canvas id="ndvi-map" width="300" height="300"></canvas>
+                        </div>
+                        <div class="map-legend ndvi-legend">
+                            <span class="legend-min">Stressed (<span id="ndvi-min">--</span>)</span>
+                            <div class="legend-bar ndvi-bar"></div>
+                            <span class="legend-max">Healthy (<span id="ndvi-max">--</span>)</span>
+                        </div>
+                        <div class="map-stats">
+                            <div class="stat">Mean: <span class="stat-value" id="ndvi-mean">--</span></div>
+                        </div>
+                    </div>
+
+                    <div class="feature-map-card">
+                        <h3>GNDVI Map</h3>
+                        <div class="map-container">
+                            <canvas id="gndvi-map" width="300" height="300"></canvas>
+                        </div>
+                        <div class="map-legend gndvi-legend">
+                            <span class="legend-min">Low (<span id="gndvi-min">--</span>)</span>
+                            <div class="legend-bar gndvi-bar"></div>
+                            <span class="legend-max">High (<span id="gndvi-max">--</span>)</span>
+                        </div>
+                        <div class="map-stats">
+                            <div class="stat">Mean: <span class="stat-value" id="gndvi-mean">--</span></div>
+                        </div>
+                    </div>
+
+                    <div class="feature-map-card">
+                        <h3>SAVI Map</h3>
+                        <div class="map-container">
+                            <canvas id="savi-map" width="300" height="300"></canvas>
+                        </div>
+                        <div class="map-legend savi-legend">
+                            <span class="legend-min">Poor (<span id="savi-min">--</span>)</span>
+                            <div class="legend-bar savi-bar"></div>
+                            <span class="legend-max">Good (<span id="savi-max">--</span>)</span>
+                        </div>
+                        <div class="map-stats">
+                            <div class="stat">Mean: <span class="stat-value" id="savi-mean">--</span></div>
+                        </div>
+                    </div>
+
+                    <div class="feature-map-card">
+                        <h3>Soil Index Map</h3>
+                        <div class="map-container">
+                            <canvas id="soil-map" width="300" height="300"></canvas>
+                        </div>
+                        <div class="map-legend soil-legend">
+                            <span class="legend-min">Good (<span id="soil-min">--</span>)</span>
+                            <div class="legend-bar soil-bar"></div>
+                            <span class="legend-max">Poor (<span id="soil-max">--</span>)</span>
+                        </div>
+                        <div class="map-stats">
+                            <div class="stat">Mean: <span class="stat-value" id="soil-mean">--</span></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sensor Trends -->
+                <div class="sensor-trends">
+                    <h3>Sensor Trends (<span id="sensor-duration">--</span> Days)</h3>
+                    <div class="trends-grid">
+                        <div class="trend-card">
+                            <h4>Soil Moisture</h4>
+                            <div style="position: relative; height: 200px;">
+                                <canvas id="soil-moisture-chart"></canvas>
+                            </div>
+                            <div class="trend-stats">
+                                <span>Current: <strong id="soil-moisture-current">--</strong></span>
+                                <span>Range: <span id="soil-moisture-range">--</span></span>
+                            </div>
+                        </div>
+                        <div class="trend-card">
+                            <h4>Air Temperature</h4>
+                            <div style="position: relative; height: 200px;">
+                                <canvas id="air-temp-chart"></canvas>
+                            </div>
+                            <div class="trend-stats">
+                                <span>Current: <strong id="air-temp-current">--</strong></span>
+                                <span>Range: <span id="air-temp-range">--</span></span>
+                            </div>
+                        </div>
+                        <div class="trend-card">
+                            <h4>Humidity</h4>
+                            <div style="position: relative; height: 200px;">
+                                <canvas id="humidity-chart"></canvas>
+                            </div>
+                            <div class="trend-stats">
+                                <span>Current: <strong id="humidity-current">--</strong></span>
+                                <span>Range: <span id="humidity-range">--</span></span>
+                            </div>
+                        </div>
+                        <div class="trend-card">
+                            <h4>Leaf Wetness</h4>
+                            <div style="position: relative; height: 200px;">
+                                <canvas id="leaf-wetness-chart"></canvas>
+                            </div>
+                            <div class="trend-stats">
+                                <span>Current: <strong id="leaf-wetness-current">--</strong></span>
+                                <span>Range: <span id="leaf-wetness-range">--</span></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Summary Statistics -->
+                <div class="summary-stats">
+                    <h3>Summary Statistics</h3>
+                    <div class="stats-table-container">
+                        <table class="stats-table">
+                            <thead>
+                                <tr>
+                                    <th>Index</th>
+                                    <th>Mean</th>
+                                    <th>Std</th>
+                                    <th>Min</th>
+                                    <th>Max</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="stats-table-body">
+                                <!-- Populated by JavaScript from liveData -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Step 3: Alerts -->
+            <section class="step-section" id="step-3">
+                <h2 class="step-title">Step 3: Alerts</h2>
+                <div class="data-source-header">
+                    <span class="source-indicator">🚨 Alerts Based on <span id="alerts-data-source">Demo Data</span></span>
+                </div>
+                <div class="alerts-container" id="alerts-container">
+                    <!-- Populated by JavaScript from liveData -->
+                </div>
+            </section>
+
+            <!-- Step 4: Auto-label Generation -->
+            <section class="step-section" id="step-4">
+                <h2 class="step-title">Step 4: Auto-label Generation</h2>
+                <div class="data-source-header">
+                    <span class="source-indicator">🏷️ Labels Based on <span id="labels-data-source">Demo Data</span></span>
+                </div>
+                <div class="labeling-info">
+                    <div class="info-card">
+                        <div class="card-icon">🏷️</div>
+                        <h3>Crop Stress Labels</h3>
+                        <p>Generated based on NDVI < 0.3 or Soil Index > 2.0</p>
+                        <div class="label-stats">
+                            <div class="stat-item">
+                                <span class="stat-number" id="stressed-count">--</span>
+                                <span class="stat-label">Stressed Areas</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-number" id="healthy-count">--</span>
+                                <span class="stat-label">Healthy Areas</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="info-card">
+                        <div class="card-icon">🐛</div>
+                        <h3>Pest Risk Labels</h3>
+                        <p>Risk levels: Low (0), Medium (1), High (2)</p>
+                        <div class="label-stats">
+                            <div class="stat-item">
+                                <span class="stat-number" id="high-risk-percent">--</span>
+                                <span class="stat-label">High Risk</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-number" id="low-risk-percent">--</span>
+                                <span class="stat-label">Low Risk</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="distribution-charts">
+                    <div class="chart-container">
+                        <h4>Crop Stress Distribution</h4>
+                        <div style="position: relative; height: 250px;">
+                            <canvas id="stress-distribution-chart"></canvas>
+                        </div>
+                    </div>
+                    <div class="chart-container">
+                        <h4>Pest Risk Distribution</h4>
+                        <div style="position: relative; height: 250px;">
+                            <canvas id="pest-distribution-chart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Step 5: Model Training -->
+            <section class="step-section" id="step-5">
+                <h2 class="step-title">Step 5: Model Training & Prediction</h2>
+                <div class="data-source-header">
+                    <span class="source-indicator">🤖 Training Based on <span id="training-data-source">Demo Data</span></span>
+                </div>
+                
+                <div class="training-controls">
+                    <div class="controls-card">
+                        <h3>Training Options</h3>
+                        <div class="control-group">
+                            <label for="model-select">Choose Model:</label>
+                            <select id="model-select" class="form-control">
+                                <option value="CNN">CNN</option>
+                                <option value="LSTM">LSTM</option>
+                                <option value="CNN-LSTM">CNN-LSTM</option>
+                            </select>
+                        </div>
+                        <div class="control-group">
+                            <label for="epochs-slider">Epochs: <span id="epochs-value">5</span></label>
+                            <input type="range" id="epochs-slider" min="2" max="20" value="5" class="slider">
+                        </div>
+                        <div class="control-group">
+                            <label>Batch Size: <span>16</span></label>
+                            <div class="batch-info">Time Steps: 3</div>
+                        </div>
+                        <button id="train-model-btn" class="btn btn--primary btn--lg">Train & Predict</button>
+                    </div>
+                    
+                    <div class="training-status" id="training-status">
+                        <div class="status-item">
+                            <div class="status-icon">📊</div>
+                            <div class="status-info">
+                                <h4>Data Prepared</h4>
+                                <p><span id="training-samples">--</span> fused samples ready for training</p>
+                            </div>
+                        </div>
+                        <div class="progress-container" id="training-progress" style="display: none;">
+                            <div class="progress-bar">
+                                <div class="progress-fill" id="progress-fill"></div>
+                            </div>
+                            <div class="progress-text" id="progress-text">Training in progress...</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="model-results" id="model-results" style="display: none;">
+                    <div class="results-grid">
+                        <div class="result-card">
+                            <h4>Crop Stress Model</h4>
+                            <div class="metric">
+                                <span class="metric-label">Accuracy:</span>
+                                <span class="metric-value" id="stress-accuracy">--</span>
+                            </div>
+                            <div class="metric">
+                                <span class="metric-label">Loss:</span>
+                                <span class="metric-value" id="stress-loss">--</span>
+                            </div>
+                        </div>
+                        <div class="result-card">
+                            <h4>Pest Risk Model</h4>
+                            <div class="metric">
+                                <span class="metric-label">Accuracy:</span>
+                                <span class="metric-value" id="pest-accuracy">--</span>
+                            </div>
+                            <div class="metric">
+                                <span class="metric-label">Loss:</span>
+                                <span class="metric-value" id="pest-loss">--</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Step 6: Visual Overlays -->
+            <section class="step-section" id="step-6">
+                <h2 class="step-title">Step 6: Interactive Visual Overlays</h2>
+                <div class="data-source-header">
+                    <span class="source-indicator">🎨 Overlays Based on <span id="overlays-data-source">Demo Data</span></span>
+                </div>
+                
+                <div class="overlay-controls">
+                    <div class="overlay-selector">
+                        <label>Overlay Type:</label>
+                        <div class="radio-group">
+                            <label class="radio-option">
+                                <input type="radio" name="overlay" value="crop-stress" checked>
+                                <span>Crop Stress</span>
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" name="overlay" value="pest-risk">
+                                <span>Pest Risk</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="visualization-container">
+                    <div class="viz-card">
+                        <h4>RGB Base Image</h4>
+                        <div class="image-container">
+                            <canvas id="rgb-image" width="400" height="400"></canvas>
+                        </div>
+                        <div class="image-info">
+                            <p>Bands: R(30), G(20), B(10)</p>
+                            <p>Resolution: <span id="image-resolution">--</span> pixels</p>
+                        </div>
+                    </div>
+                    
+                    <div class="viz-card">
+                        <h4>AI Prediction Overlay</h4>
+                        <div class="image-container">
+                            <canvas id="overlay-image" width="400" height="400"></canvas>
+                        </div>
+                        <div class="overlay-legend" id="overlay-legend">
+                            <!-- Updated by JavaScript based on overlay type -->
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="export-section">
+                    <h3>Export & Reports</h3>
+                    <div class="export-buttons">
+                        <button class="btn btn--outline" id="export-data-btn">📊 Export Data</button>
+                        <button class="btn btn--outline" id="export-report-btn">📄 Export Report</button>
+                        <button class="btn btn--outline" id="export-images-btn">🖼️ Export Images</button>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <script src="app.js"></script>
+</body>
+</html>
